@@ -1,4 +1,6 @@
-//Helpers
+/**
+ * Functions for building and searching trie
+ */
 
 //populate children for new trie nodes
 const getChildren = () => {
@@ -8,9 +10,14 @@ const getChildren = () => {
 }
 //subtract this value to get indices starting at 0
 const CHAR_INDEX_OFFSET = 97;
+
+//getting charcode index / values
 const charToIndex = c => c.charCodeAt(0) - CHAR_INDEX_OFFSET;
+const indexToChar = i => String.fromCharCode(i + CHAR_INDEX_OFFSET);
+
 //Create new trie nodes
 const TrieNode = () => ({ isEndOfWord: false, children: getChildren() }); 
+
 //create the root node
 let rootNode = TrieNode();
 
@@ -37,20 +44,25 @@ const exists = word => {
     return node.isEndOfWord;
 }
 
-const crawl = (curr, cIndex, cTxt = '') => {
-    if(curr.isEndOfWord) {
-        return cTxt += String.fromCharCode(cIndex + CHAR_INDEX_OFFSET)
-    }
+let a = []
 
+function crawl(curr, cIndex, cTxt = ''){
+    if(curr.isEndOfWord) 
+        a.push(cTxt += indexToChar(cIndex));
     for(let i = 0; i < curr.children.length; i++){
-        if(curr.children[i]){
-            return crawl(curr.children[i], i, cTxt + String.fromCharCode(cIndex + CHAR_INDEX_OFFSET))
-        }
+        if(curr.children[i])
+            crawl(curr.children[i], i, cTxt + indexToChar(cIndex))
     }
 }
 
+//build trie
+export const build = words => {
+    words.forEach( word => add(word));
+    return rootNode;
+}
+
 //predict
-const predict = chars => {
+export const predict = (chars) => {
     let possibilities = [];
     let currentNode = rootNode;
     let i = 0;
@@ -67,23 +79,10 @@ const predict = chars => {
         .children.forEach((node, index) => {
             let tail = '';
             if(node){
-                tail = crawl(node, index)
-                possibilities.push(chars + tail)
+                crawl(node, index);
+                possibilities.push(a)
             }    
     });
-
-    console.log(rootNode)
+    return possibilities;
 }
 
-//create trie
-["hello", "how", "host", "hoggie"]
-    .forEach( word => {
-        add(word)
-    });
-
-//search trie
-let result = predict("ho");
-
-
-
-console.log(rootNode)
