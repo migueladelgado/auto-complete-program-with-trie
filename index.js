@@ -2,10 +2,9 @@ import Trie from './trie.js';
 import Statistics from './statistics.js';
 import data from './data.js';
 
-
 let words = [];
 
-for(let i = 0; i < 100; i++) {
+for(let i = 0; i < 2000; i++) {
     words = words.concat(data);
 }
 

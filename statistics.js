@@ -1,3 +1,4 @@
+import { performance } from 'perf_hooks';
 export default class Statistics {
     callback;
     words;
@@ -6,9 +7,9 @@ export default class Statistics {
     }
 
     getTimeDelta = () => {
-        let start = new Date().getMilliseconds();
+        let start = performance.now();
         this.words = this.callback();
-        let end = new Date().getMilliseconds();
+        let end = performance.now();
         return end - start;
     }
 
